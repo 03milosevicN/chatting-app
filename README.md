@@ -1,1 +1,1 @@
-# Working with WebSockets and JDBC for a GUI-based chatting application.
+# Working with WebSockets and JDBC for a chatting application.
