@@ -6,10 +6,16 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.*;
 
 public class Server {
 
     protected int SERVER_PORT;
+
+    // this stores all client handlers:
+    private final List<ClientHandler> clients = new ArrayList<>();
+
+
 
     public void startServer() throws Exception {
 
@@ -24,13 +30,30 @@ public class Server {
 
         while (true) {
             Socket establishClientSocket = serverSocket.accept();
-            System.out.println("Established connection from " + establishClientSocket.getInetAddress());
+            BufferedReader in = new BufferedReader(new InputStreamReader(establishClientSocket.getInputStream()));
+            String clientName = in.readLine();
+
+            System.out.println("Established connection from " + establishClientSocket.getInetAddress() + " named: " + clientName);
 
             //ClientHandler is a Runnable that handles clients:
-            ClientHandler clientHandler = new ClientHandler(establishClientSocket);
-            new Thread(clientHandler).start();
+            ClientHandler clientHandler = new ClientHandler(establishClientSocket, clientName, this);
+            synchronized (clients) {
+                clients.add(clientHandler);
+            }
+            new Thread(clientHandler, clientName).start();
         }
 
+    }
+
+    //function for message broadcasting:
+    public void broadcastMessage(String message, ClientHandler sender) {
+        synchronized (clients) {
+            for (ClientHandler clientHandler : clients) {
+                if (clientHandler != sender) {
+                    clientHandler.sendMessage(message);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {
