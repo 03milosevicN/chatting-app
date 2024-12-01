@@ -1,3 +1,5 @@
+// Temporary class for testing a 2nd client. Not to be commited!
+
 package org.example.Core;
 
 import org.example.Model.Client;
