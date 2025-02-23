@@ -1,1 +1,4 @@
-# Working with WebSockets and JDBC for a chatting application.
+# chatting-app
+
+# About
+Java application that utilizes WebSockets and JDBC.
